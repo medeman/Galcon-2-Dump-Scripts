@@ -3,17 +3,35 @@
 START=${1:-"2014-10-27"}
 TODAY=$2
 
-if [[ -z $TODAY ]]; then
-  TODAY=$(date +%s -d "$(date "+%Y%m%d")")
-else
-  TODAY=$(date +%s -d "$TODAY")
-fi
+OPTIND=1
 
-while [ $(date +%s -d "$START") -le $TODAY ]; do
-  if [ -f $START.txt ]; then
-    echo $START.txt already exists. Skipping.
+FROM="2014-10-27"
+TO=$(date +%s -d "$(date "+%Y%m%d")")
+OUTPUT="./"
+SOURCE="http://www.galcon.com/g2/logs/"
+
+while getopts "f:t:o:s:" OPT; do
+  case "$OPT" in
+    f) #from
+      FROM=$OPTARG
+      ;;
+    t) #to
+      TO=$(date +%s -d "$OPTARG")
+      ;;
+    o) #output directory
+      OUTPUT=$OPTARG
+      ;;
+    s) #source
+      SOURCE=$OPTARG
+      ;;
+  esac
+done
+
+while [ $(date +%s -d "$FROM") -le $TO ]; do
+  if [ -f $OUTPUT$FROM.txt ]; then
+    echo $FROM.txt already exists. Skipping.
   else
-    curl "http://www.galcon.com/g2/logs/$START.txt" -O
+    curl "$SOURCE$FROM.txt" -o "$OUTPUT$FROM.txt"
   fi
-  START=$(date +%Y-%m-%d -d "$START +1 day")
+  FROM=$(date +%Y-%m-%d -d "$FROM +1 day")
 done
