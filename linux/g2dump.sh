@@ -10,7 +10,10 @@ else
 fi
 
 while [ $(date +%s -d "$START") -le $TODAY ]; do
-  echo http://www.galcon.com/g2/logs/$START.txt
-  curl "http://www.galcon.com/g2/logs/$START.txt" -O
+  if [ -f $START.txt ]; then
+    echo $START.txt already exists. Skipping.
+  else
+    curl "http://www.galcon.com/g2/logs/$START.txt" -O
+  fi
   START=$(date +%Y-%m-%d -d "$START +1 day")
 done
