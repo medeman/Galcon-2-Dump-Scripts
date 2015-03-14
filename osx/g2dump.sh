@@ -10,6 +10,10 @@ else
 fi
 
 while [ $(date -j -f "%Y-%m-%d" "$START" "+%s") -le $TODAY ]; do
-  curl "http://www.galcon.com/g2/logs/$START.txt" -O
+  if [ -f $START.txt ]; then
+    echo $START.txt already exists. Skipping.
+  else
+    curl "http://www.galcon.com/g2/logs/$START.txt" -O
+  fi
   START=$(date -v+1d -j -f "%Y-%m-%d" "$START" "+%Y-%m-%d")
 done
