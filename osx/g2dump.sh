@@ -1,19 +1,34 @@
 #!/bin/bash
 
-START=${1:-"2014-10-27"}
-TODAY=$2
+OPTIND=1
 
-if [[ -z $TODAY ]]; then
-  TODAY=$(date -j -f "%Y%m%d" "$(date "+%Y%m%d")" "+%s")
-else
-  TODAY=$(date -j -f "%Y-%m-%d" "$TODAY" "+%s")
-fi
+FROM="2014-10-27"
+TO=$(date -j -f "%Y%m%d" "$(date "+%Y%m%d")" "+%s")
+OUTPUT="./"
+SOURCE="http://www.galcon.com/g2/logs/"
 
-while [ $(date -j -f "%Y-%m-%d" "$START" "+%s") -le $TODAY ]; do
-  if [ -f $START.txt ]; then
-    echo $START.txt already exists. Skipping.
+while getopts "f:t:o:s:" OPT; do
+  case "$OPT" in
+    f) #from
+      FROM=$OPTARG
+      ;;
+    t) #to
+      TO=$(date -j -f "%Y-%m-%d" "$OPTARG" "+%s")
+      ;;
+    o) #output directory
+      OUTPUT=$OPTARG
+      ;;
+    s) #source
+      SOURCE=$OPTARG
+      ;;
+  esac
+done
+
+while [ $(date -j -f "%Y-%m-%d" "$FROM" "+%s") -le $TO ]; do
+  if [ -f $OUTPUT$FROM.txt ]; then
+    echo $FROM.txt already exists. Skipping.
   else
-    curl "http://www.galcon.com/g2/logs/$START.txt" -O
+    curl "$SOURCE$FROM.txt" -o "$OUTPUT$FROM.txt"
   fi
-  START=$(date -v+1d -j -f "%Y-%m-%d" "$START" "+%Y-%m-%d")
+  FROM=$(date -v+1d -j -f "%Y-%m-%d" "$FROM" "+%Y-%m-%d")
 done
