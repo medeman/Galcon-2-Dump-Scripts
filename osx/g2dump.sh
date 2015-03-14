@@ -28,7 +28,7 @@ while [ $(date -j -f "%Y-%m-%d" "$FROM" "+%s") -le $TO ]; do
   if [ -f $OUTPUT$FROM.txt ]; then
     echo $FROM.txt already exists. Skipping.
   else
-    curl "$SOURCE$FROM.txt" -o "$OUTPUT$FROM.txt"
+    curl "$SOURCE$FROM.txt" -f -o "$OUTPUT$FROM.txt"
   fi
   FROM=$(date -v+1d -j -f "%Y-%m-%d" "$FROM" "+%Y-%m-%d")
 done
