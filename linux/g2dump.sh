@@ -10,8 +10,9 @@ TO=$(date +%s -d "$(date "+%Y%m%d")")
 OUTPUT="./"
 SOURCE="http://www.galcon.com/g2/logs/"
 COMPRESS=false
+DOWNLOAD_COMPRESSED=false
 
-while getopts "f:t:o:s:c" OPT; do
+while getopts "f:t:o:s:cx" OPT; do
   case "$OPT" in
     f) #from
       FROM=$OPTARG
@@ -25,8 +26,12 @@ while getopts "f:t:o:s:c" OPT; do
     s) #source
       SOURCE=$OPTARG
       ;;
-    c)
+    c) #enable compression
       COMPRESS=true
+      ;;
+    x) #try to download compressed .tgz versions of the dump (and extract them)
+      DOWNLOAD_COMPRESSED=true
+      ;;
   esac
 done
 
@@ -34,14 +39,26 @@ while [ $(date +%s -d "$FROM") -le $TO ]; do
   if [ -f $OUTPUT$FROM.txt ]; then
     echo $FROM.txt already exists. Skipping.
   else
-    curl "$SOURCE$FROM.txt" -f -o "$OUTPUT$FROM.txt"
+    if [ $DOWNLOAD_COMPRESSED = true ]; then
+      if [ ! -f $OUTPUT$FROM.txt ]; then
+        curl "$SOURCE$FROM.tgz" -f -o "$OUTPUT$FROM.tgz"
+      fi
+
+      if [ -f $OUTPUT$FROM.tgz ]; then
+        tar -C "$OUTPUT" -zxvf "$FROM.tgz"
+      else
+        curl "$SOURCE$FROM.txt" -f -o "$OUTPUT$FROM.txt"
+      fi
+    else
+      curl "$SOURCE$FROM.txt" -f -o "$OUTPUT$FROM.txt"
+    fi
   fi
 
   if [ $COMPRESS = true ]; then
     if [ -f $OUTPUT$FROM.tgz ]; then
       echo $FROM.tgz already exists. Skipping.
-    else
-      tar -zcvf $OUTPUT$FROM.tgz $OUTPUT$FROM.txt
+    elif [ -f $OUTPUT$FROM.txt ]; then
+      tar -C "$OUTPUT" -zcvf "$FROM.tgz" "$FROM.txt"
     fi
   fi
 
