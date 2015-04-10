@@ -45,7 +45,7 @@ while [ $(date +%s -d "$FROM") -le $TO ]; do
       fi
 
       if [ -f $OUTPUT$FROM.tgz ]; then
-        tar -C "$OUTPUT" -zxvf "$FROM.tgz"
+        tar -C "$OUTPUT" -zxvf "$OUTPUT$FROM.tgz"
       else
         curl "$SOURCE$FROM.txt" -f -o "$OUTPUT$FROM.txt"
       fi
