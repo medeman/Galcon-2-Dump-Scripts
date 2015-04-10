@@ -58,7 +58,7 @@ while [ $(date +%s -d "$FROM") -le $TO ]; do
     if [ -f $OUTPUT$FROM.tgz ]; then
       echo $FROM.tgz already exists. Skipping.
     elif [ -f $OUTPUT$FROM.txt ]; then
-      tar -C "$OUTPUT" -zcvf "$FROM.tgz" "$FROM.txt"
+      tar -C "$OUTPUT" -zcvf "$OUTPUT$FROM.tgz" "$FROM.txt"
     fi
   fi
 
