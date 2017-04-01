@@ -20,4 +20,4 @@ To download all logs to the current folder, simply run the script: `./g2dump.sh`
 * `./g2dump.sh -o /var/www/g2/logs/` Download all logs to `/var/www/g2/logs/`
 * `./g2dump.sh -s http://www.example.com/g2-logs-mirror/` Download all logs from the specified mirror instead of galcon.com.
 * `./g2dump.sh -c` Download all logs and compress them.
-* `./g2dimp.sh -s http://www.example.com/g2-logs-mirror-with-compression -x` Download all logs in compressed form and extract them.
+* `./g2dimp.sh -s http://www.example.com/g2-logs-mirror-with-compression/ -x` Download all logs in compressed form and extract them.
